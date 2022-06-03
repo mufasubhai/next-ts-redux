@@ -10,6 +10,8 @@ import {
   selectCount,
 } from '../features/counter/counterSlice';
 
+
+import { initCosmos } from '../app/cosmos';
 import {store}from '../app/store'
 const IndexPage:React.FC = () => {
   const dispatch = useAppDispatch();
@@ -22,15 +24,16 @@ const IndexPage:React.FC = () => {
     if (window && !stateSet) {
       window.getState = store.getState
       setStateSet(true)
+      initCosmos()
     }
   }, [store])
 
   return (
     <>
-      <h1>Welcome to the greatest app in the world!</h1>
+      <h1>Test App</h1>
       <h2>
-        The current number is
-        {count}
+        The current number is: 
+        {" " + count}
       </h2>
       <div>
         <input
