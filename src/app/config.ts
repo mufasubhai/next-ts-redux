@@ -1,11 +1,21 @@
 
 
 var database = {
-  id: 'ToDoList'
+  id: 'ShroodTest'
 }
 
 var container = {
   id: 'Items'
+}
+
+
+var otbHistories = {
+  container: {
+    id: "OTBHistory"
+  },
+  database: {
+    id: "ToDoList"
+  }
 }
 
 var items = {
@@ -85,7 +95,7 @@ var items = {
   }
 }
 
-console.log(database)
+
 export default {
   env: process.env.NODE_ENV,
   mode: process.env.MODE,
@@ -94,4 +104,5 @@ export default {
   items: items,
   container: container,
   database: database,
+  otbHistories: otbHistories,
 }

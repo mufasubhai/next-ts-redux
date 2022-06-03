@@ -9,7 +9,7 @@ import {
   incrementByAmount,
   selectCount,
 } from '../features/counter/counterSlice';
-
+import { testQuery } from '../app/testQuery';
 
 import { initCosmos } from '../app/cosmos';
 import {store}from '../app/store'
@@ -24,7 +24,8 @@ const IndexPage:React.FC = () => {
     if (window && !stateSet) {
       window.getState = store.getState
       setStateSet(true)
-      initCosmos()
+      // initCosmos()
+      testQuery()
     }
   }, [store])
 

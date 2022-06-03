@@ -8,8 +8,7 @@ const url = require('url')
 
 
 export const initCosmos = () => {
-  console.log('initStart!!!!')
-  console.log(config)
+
   const endpoint = config.endpoint
   const key = config.key
   const options = {
@@ -187,9 +186,9 @@ async function cleanup() {
 function exit(message) {
   console.log(message)
   console.log('Press any key to exit')
-  process.stdin.setRawMode(true)
-  process.stdin.resume()
-  process.stdin.on('data', process.exit.bind(process, 0))
+  // process.stdin.setRawMode(true)
+  // process.stdin.resume()
+  // process.stdin.on('data', process.exit.bind(process, 0))
 }
 
 createDatabase()
@@ -202,7 +201,7 @@ createDatabase()
   .then(() => queryContainer())
   .then(() => replaceFamilyItem(config.items.Andersen))
   .then(() => queryContainer())
-  .then(() => deleteFamilyItem(config.items.Andersen))
+  // .then(() => deleteFamilyItem(config.items.Andersen))
   .then(() => {
     exit(`Completed successfully`)
   })
