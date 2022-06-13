@@ -105,4 +105,9 @@ export default {
   container: container,
   database: database,
   otbHistories: otbHistories,
+  pgHost: process.env.PG_HOST,
+  pgUser: process.env.PG_USER,
+  pgPW: process.env.PG_PW,
+  pgDB: process.env.PG_DB,
+  pgPort: process.env.PG_PORT
 }

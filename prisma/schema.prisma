@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("SQL_URL")
+}
+
+
+model OTBSampleHistory {
+  fiscalYear    Int    @db.SmallInt @map("FISCALYEAR")
+  fiscalQuarter String @db.NVarChar(50) @map("FISCALQUARTER")
+  fiscalMonth   String @db.NVarChar(50) @map("FISCALMONTH")
+  fiscalWeek    String @db.NVarChar(50) @map("FISCALWEEK")
+  deptName      String @db.NVarChar(50) @map("DEPTNAME")
+  className     String @db.NVarChar(50) @map("CLASSNAME")
+  priceStatus   String @db.NVarChar(50) @map("PRICESTATUS")
+  salesUnits    Int?
+  salesRetail   Float?
+  tranCount     Int?
+  salesCost     Float?
+  AIR           Float?
+  AUC           Float?
+  AUR           Float?
+  discountPerc     Float? @map("Discount%")
+  GMPerc           Float? @map("GM%")
+
+  @@id([fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus], map: "PK_OTB_Sample_Histories")
+
+  @@map("OTB_Sample_Histories")
+}

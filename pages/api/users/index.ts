@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { sampleUserData } from '../../../../utils/sample-data'
+import { sampleUserData } from '../../../utils/sample-data'
 
 const handler = (_req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -12,5 +12,23 @@ const handler = (_req: NextApiRequest, res: NextApiResponse) => {
     res.status(500).json({ statusCode: 500, message: err.message })
   }
 }
+
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  const allOTB = await prisma.oTBSampleHistory.findMany()
+  console.log(allOTB)
+}
+
+main()
+.catch((e) => {
+  throw e
+})
+.finally(async () => {
+  await prisma.$disconnect()
+})
+
 
 export default handler

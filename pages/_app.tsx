@@ -8,7 +8,7 @@ function MyApp({
 
   return (
     <Provider store={store}>
-   
+      {/* {console.log(pageProps)} */}
       <Component {...pageProps} />
     </Provider>
   );

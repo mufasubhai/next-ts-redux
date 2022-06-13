@@ -9,9 +9,16 @@ import {
   incrementByAmount,
   selectCount,
 } from '../features/counter/counterSlice';
-import { testQuery } from '../app/testQuery';
 
+
+import Image from 'next/image'; 
+import Layout from '../components/Layout';
+
+import { testQuery } from '../app/testQuery';
+import index from '../app/index';
 import { initCosmos } from '../app/cosmos';
+import { GetStaticProps } from 'next'
+import sqlQuery from '../app/sqlQuery'
 import {store}from '../app/store'
 const IndexPage:React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,16 +32,31 @@ const IndexPage:React.FC = () => {
       window.getState = store.getState
       setStateSet(true)
       // initCosmos()
-      testQuery()
+    //  index.main()
+
+      // sqlQuery.clientDataPull()
+      // testQuery()
     }
+  
   }, [store])
 
+
   return (
-    <>
+    <Layout title="welcome to the main page">
       <h1>Test App</h1>
+      
       <h2>
+
+        <img src={"/images/plancode.png"} alt="test"/>
+      <Image
+    src="/images/plancode.png" // Route of the image file
+    height={144} // Desired size with correct aspect ratio
+    width={144} // Desired size with correct aspect ratio
+    alt="Your Name"
+  />
         The current number is: 
         {" " + count}
+
       </h2>
       <div>
         <input
@@ -52,7 +74,7 @@ const IndexPage:React.FC = () => {
         <button onClick={() => dispatch(decrement())}>Decrement by 1</button>
         <button onClick={() => dispatch(increment())}>Increment by 1</button>
       </div>
-    </>
+    </Layout>
   );
 };
 

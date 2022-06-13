@@ -1,9 +1,9 @@
 import { GetStaticProps, GetStaticPaths } from 'next'
 
-import { User } from '../../../interfaces'
-import { sampleUserData } from '../../../utils/sample-data'
-import Layout from '../../../components/Layout'
-import ListDetail from '../../../components/ListDetail'
+import { User } from '../../interfaces'
+import { sampleUserData } from '../../utils/sample-data'
+import Layout from '../../components/Layout'
+import ListDetail from '../../components/ListDetail'
 
 type Props = {
   item?: User
@@ -11,6 +11,7 @@ type Props = {
 }
 
 const StaticPropsDetail = ({ item, errors }: Props) => {
+  console.log("hello")
   if (errors) {
     return (
       <Layout title="Error | Next.js + TypeScript Example">
@@ -23,6 +24,7 @@ const StaticPropsDetail = ({ item, errors }: Props) => {
 
   return (
     <Layout
+    // {console.log("HELLO")}
       title={`${
         item ? item.name : 'User Detail'
       } | Next.js + TypeScript Example`}
@@ -51,6 +53,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   try {
     const id = params?.id
+    console.log("THIS IS THE PARAMS")
+    console.log(params)
+    console.log(id)
+    console.log(Number)
     const item = sampleUserData.find((data) => data.id === Number(id))
     // By returning { props: item }, the StaticPropsDetail component
     // will receive `item` as a prop at build time
