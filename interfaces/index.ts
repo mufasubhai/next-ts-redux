@@ -10,3 +10,8 @@ export type User = {
 }
 
 
+export type DB = {
+  id: number,
+  name: string,
+  api: string
+}

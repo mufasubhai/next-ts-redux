@@ -8,10 +8,8 @@ import { PrismaClient } from '@prisma/client'
 
 
 export default async function handle(req, res) {
-  console.log("HERE")
-  console.log(req.method)
   const otb = await prisma.oTBSampleHistory.findMany()
-  // console.log(otb)
+  console.log(otb)
   res.json(otb)
 }
 // 
