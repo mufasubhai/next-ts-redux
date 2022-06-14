@@ -23,7 +23,6 @@ import { Pool }  from 'pg'
       const OTBHistories = await conn.query('SELECT * from otb_sample_histories')
     await conn.end()
 
-    console.log("HELLO")
 
     console.log(OTBHistories)
     return OTBHistories

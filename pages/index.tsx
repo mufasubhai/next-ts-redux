@@ -10,23 +10,37 @@ import {
   selectCount,
 } from '../features/counter/counterSlice';
 
-
+import utilStyles from '../styles/utils.module.css'
 import Image from 'next/image'; 
 import Layout from '../components/Layout';
-
+import Link from 'next/link';
+import Date from '../components/date';
 import { testQuery } from '../app/testQuery';
 import index from '../app/index';
 import { initCosmos } from '../app/cosmos';
 import { GetStaticProps } from 'next'
 import sqlQuery from '../app/sqlQuery'
 import {store}from '../app/store'
-const IndexPage:React.FC = () => {
+
+import { getSortedPostsData } from '../lib/posts';
+
+export async function getStaticProps() {
+  const allPostsData = getSortedPostsData();
+  return {
+    props: {
+      allPostsData,
+      home: "TEST HOME"
+    },
+  };
+}
+
+
+const Home:React.FC = ({ allPostsData, home }) => {
   const dispatch = useAppDispatch();
   const count = useAppSelector(selectCount);
   const [incrementAmount, setIncrementAmount] = useState<number>(0);
   const [stateSet, setStateSet ] = useState(false)
   useEffect(() => {
-    console.log(window)
 
     if (window && !stateSet) {
       window.getState = store.getState
@@ -42,18 +56,25 @@ const IndexPage:React.FC = () => {
 
 
   return (
-    <Layout title="welcome to the main page">
-      <h1>Test App</h1>
-      
+    <Layout home>
+
+      <h1>Test Blog App W/ Counter</h1>
+      <ul className={utilStyles.list}>
+          {allPostsData.map(({ id, date, title }) => (
+           <li className={utilStyles.listItem} key={id}>
+           <Link href={`/posts/${id}`}>
+             <a>{title}</a>
+           </Link>
+           <br />
+           <small className={utilStyles.lightText}>
+             <Date dateString={date} />
+           </small>
+         </li>
+          ))}
+        </ul>
       <h2>
 
-        <img src={"/images/plancode.png"} alt="test"/>
-      <Image
-    src="/images/plancode.png" // Route of the image file
-    height={144} // Desired size with correct aspect ratio
-    width={144} // Desired size with correct aspect ratio
-    alt="Your Name"
-  />
+
         The current number is: 
         {" " + count}
 
@@ -78,4 +99,4 @@ const IndexPage:React.FC = () => {
   );
 };
 
-export default IndexPage;
+export default Home;

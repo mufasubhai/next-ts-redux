@@ -1,7 +1,6 @@
 import { GetStaticProps } from 'next'
 import Link from 'next/link'
 
-
 import { User } from '../../interfaces'
 
 // here we can have 
@@ -14,7 +13,7 @@ type Props = {
   items: User[]
 }
 
-const WithStaticProps = ({ items}: Props) => (
+const UsersIndex = ({ items}: Props) => (
   <Layout title="Users List | Next.js + TypeScript Example">
     <h1>Users List</h1>
     <p>
@@ -39,4 +38,4 @@ export const getStaticProps: GetStaticProps = async () => {
   return { props: { items } }
 }
 
-export default WithStaticProps
+export default UsersIndex
