@@ -15,19 +15,23 @@ type Props = {
 };
 
 
-const UsersIndex = ({ items }: Props) => {
+const DataTestIndex = ({ items }: Props) => {
   const [currentData, setCurrentData] = useState([]);
   const apiAction = (api) => {
     console.log("api");
     console.log(api);
-  
+    let startSeconds = new Date();
+    let seconds;
     if (api === "otb_sample_histories") {
 
       fetch("api/otb_sample_histories").then(res => res.json()).then((data) => {
 
-        console.log(data)
+        // console.log(data)
         setCurrentData(data)
         console.log(currentData)
+        seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+        console.log(`\tQuery returned for ${api}\n in ${seconds}`)
       })
         
         
@@ -40,10 +44,85 @@ const UsersIndex = ({ items }: Props) => {
 
       // setCurrentData()
 
-    } else  if (api === "") {
+    } else  if (api === "cs_otb_sample_histories") {
       
-    } else if (api === "") {
+      fetch("api/cs_otb_sample_histories").then(res => res.json()).then((data) => {
 
+        console.log(data)
+        setCurrentData(data)
+        console.log(currentData)
+        seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+        console.log(`\tQuery returned for ${api}\n in ${seconds}`)
+      })
+        
+        
+      
+    } else if (api === "cm_otb_sample_histories") {
+   
+      fetch("api/cm_otb_sample_histories").then(res => res.json()).then((data) => {
+
+        console.log(data)
+        setCurrentData(data)
+        console.log(currentData)
+        seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+        console.log(`\tQuery returned for ${api}\n in ${seconds}`)
+      })
+    }
+  };
+  const apiActionWriting = (api) => {
+    console.log("api");
+    console.log(api);
+    let startSeconds = new Date();
+    let seconds;
+    if (api === "otb_sample_histories") {
+
+      fetch("api/otb_sample_histories", {method: "POST", body: "HELLO HERE IS THE REQUEST"}).then(res => res.json()).then((data) => {
+
+        console.log(data)
+        setCurrentData(data)
+        console.log(currentData)
+        seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+        console.log(`\tQuery returned for ${api}\n in ${seconds}`)
+      })
+        
+        
+      //   {
+      //   console.log(res.jsoin())
+      //   setCurrentData(res)
+      //   console.log("currentData")
+      //   console.log(currentData)
+      // })
+
+      // setCurrentData()
+
+    } else  if (api === "cs_otb_sample_histories") {
+      
+      fetch("api/cs_otb_sample_histories", {method: "POST", body: "HELLO HERE IS THE REQUEST"}).then(res => res.json()).then((data) => {
+
+        console.log(data)
+        setCurrentData(data)
+        console.log(currentData)
+        seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+        console.log(`\tQuery returned for ${api}\n in ${seconds}`)
+      })
+        
+        
+      
+    } else if (api === "cm_otb_sample_histories") {
+   
+      fetch("api/cm_otb_sample_histories", {method: "POST", body: "HELLO HERE IS THE REQUEST"  }).then(res => res.json()).then((data) => {
+
+        console.log(data)
+        setCurrentData(data)
+        console.log(currentData)
+        seconds = parseFloat((new Date() - startSeconds) / 1000)
+
+        console.log(`\tQuery returned for ${api}\n in ${seconds}`)
+      })
     }
   };
   return (
@@ -51,7 +130,11 @@ const UsersIndex = ({ items }: Props) => {
       <h1>DATA</h1>
       <p>Examples of fetching data.</p>{" "}
       {items.map((el) => {
-        return <button onClick={() => apiAction(el.api)}>{el.name}</button>;
+        return <button key={el.api + "fetch"} onClick={() => apiAction(el.api)}>{el.name}</button>;
+      })}
+      <p>Examples of writing data.</p>{" "}
+      {items.map((el) => {
+        return <button key={el.api + "write"} onClick={() => apiActionWriting(el.api)}>{el.name}</button>;
       })}
       {/* <List items={itemsl} /> */}
       <p>
@@ -72,4 +155,4 @@ export const getStaticProps: GetStaticProps = async () => {
   return { props: { items } };
 };
 
-export default UsersIndex;
+export default DataTestIndex;
