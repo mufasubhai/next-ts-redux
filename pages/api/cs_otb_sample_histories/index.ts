@@ -65,8 +65,8 @@ function timeout(ms) {
 let keySpace = "otbData";
 let table = "otbSampleHistories";
 let table2 = "product"
-let table3 = "date"
-
+let table3 = "dates"
+let table4 = "hierarchies"
 export default async function handle(
   _req: NextApiRequest, res: NextApiResponse
 ) {
@@ -81,31 +81,37 @@ export default async function handle(
     await client.execute(query);
     console.log("created keyspace");
   
-    
-    query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table3} (
-      date_val timestamp PRIMARY KEY,
-      day_eng varchar,
-      fscl_week int,
-      fscl_mnth varchar,
-      FSCL_QTR varchar,
-      FSCL_YEAR int,
+
+    query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table4} (
+     hrchy_id int PRIMARY KEY,
+       subclass varchar,
+      class varchar,
+      dept varchar
       );`;
+    // query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table3} (
+    //   date_val timestamp PRIMARY KEY,
+    //   day_eng varchar,
+    //   fscl_week int,
+    //   fscl_mnth varchar,
+    //   FSCL_QTR varchar,
+    //   FSCL_YEAR int,
+    //   );`;
       // PRIMARY KEY (fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus)
       await client.execute(query);
-      const dates = await prisma.date.findMany();
+      const hierarchies = await prisma.hierarchy.findMany();
 
-      let productResults = dates.map(otbObject => parsedInsertString(otbObject, table2, keySpace))
+      let hierarchyResults = hierarchies.map(otbObject => parsedInsertString(otbObject, table4, keySpace))
       let startSeconds = new Date();
       let seconds;
       let secondsElapsed
-     for (let i = 0; i < productResults.length; i++) {
+     for (let i = 0; i < hierarchyResults.length; i++) {
         try {
       
-            await client.execute(productResults[i]);
+            await client.execute(hierarchyResults[i]);
             await timeout(10)
-            // console.log(productResults[i])
+            // console.log(hierarchyResults[i])
             secondsElapsed = parseFloat((new Date() - startSeconds) / 1000)
-            console.log(`record ${i + 1} of ${productResults.length} in ${secondsElapsed} seconds`)
+            console.log(`record ${i + 1} of ${hierarchyResults.length} in ${secondsElapsed} seconds`)
        
         } catch(err) {
           console.log(err)
@@ -117,7 +123,7 @@ export default async function handle(
     // console.log("created table");
  
 
-    res.json(products);
+    res.json(hierarchies);
 
 
   } else if (_req.method === "GET"){
