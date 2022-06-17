@@ -8,6 +8,17 @@ datasource db {
 }
 
 
+
+model Date {
+  DATE_VAL  DateTime @id(map: "PK_Date") @db.SmallDateTime
+  day_eng   String?  @db.VarChar(20)
+  fscl_week String?  @db.VarChar(20)
+  fscl_mnth String?  @db.VarChar(20)
+  FSCL_QTR  String?  @db.VarChar(20)
+  FSCL_YEAR Int?     @db.SmallInt
+}
+
+
 model OTBSampleHistory {
   fiscalYear    Int    @db.SmallInt @map("FISCALYEAR")
   fiscalQuarter String @db.NVarChar(50) @map("FISCALQUARTER")
@@ -29,4 +40,19 @@ model OTBSampleHistory {
   @@id([fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus], map: "PK_OTB_Sample_Histories")
 
   @@map("OTB_Sample_Histories")
+}
+
+model Product {
+  sku_id                   Float   @id(map: "PK_Product")
+  style_id                 Float?
+  style_code               String? @db.VarChar(20)
+  style_desc_eng           String? @db.VarChar(120)
+  COLOR_ENG                String? @db.VarChar(20)
+  STYLE_COLOR              String? @db.NVarChar(20)
+  PRMRY_SIZE               String? @db.VarChar(8)
+  SIZE_VAL                 String? @db.VarChar(17)
+  PRMRY_VNDR_STYLE         String? @db.VarChar(40)
+  STYLE_COLOR_ORIG_ENT_PRC Float?
+  HRCHY_ID                 Int?
+  UPC_NUMBER               String? @db.NVarChar(14)
 }

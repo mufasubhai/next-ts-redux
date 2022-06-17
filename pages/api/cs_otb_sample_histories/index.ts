@@ -9,10 +9,14 @@ import { TIMEOUT } from "dns";
 
 const prisma = new PrismaClient();
 
+const escapeVals = (el) => {
 
+ if (typeof el != "string") return el
+  return "'" +  el.split("'").join("''") + "'"
+}
 const checkNum = (el) => {
   if (el === null) return null
-return (typeof el === 'number') ? el : "'" + el + "'"
+return (typeof el === 'number') ? el :  escapeVals(el)
 }
 const parsedInsertString = (otbObject, table, keySpace) => {
   let insertStringColumns = '('
@@ -60,8 +64,8 @@ function timeout(ms) {
 }
 let keySpace = "otbData";
 let table = "otbSampleHistories";
-let table2 = ""
-let table3 = ""
+let table2 = "product"
+let table3 = "date"
 
 export default async function handle(
   _req: NextApiRequest, res: NextApiResponse
@@ -71,53 +75,49 @@ export default async function handle(
 
   if (_req.method === "POST") {
     console.log(_req.body);
-    const otb = await prisma.oTBSampleHistory.findMany();
+    // const otb = await prisma.oTBSampleHistory.findMany();
     // console.log(otb)
     var query = `CREATE KEYSPACE IF NOT EXISTS ${keySpace} WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter' : '1' }`;
     await client.execute(query);
     console.log("created keyspace");
-    console.log(otb[0])
+  
     
-    query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table} (AIR float, 
-      AUC float,
-      AUR float,
-      GMPerc float,
-      className varchar,
-      deptName varchar,
-      discountPerc float,
-      fiscalMonth varchar,
-      fiscalQuarter varchar,
-      fiscalWeek varchar,
-      fiscalYear int,
-      priceStatus varchar,
-      salesCost float,
-      salesRetail float,
-      salesUnits float,
-      tranCount float,
-      PRIMARY KEY (fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus)
+    query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table3} (
+      date_val timestamp PRIMARY KEY,
+      day_eng varchar,
+      fscl_week int,
+      fscl_mnth varchar,
+      FSCL_QTR varchar,
+      FSCL_YEAR int,
       );`;
+      // PRIMARY KEY (fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus)
       await client.execute(query);
+      const dates = await prisma.date.findMany();
+
+      let productResults = dates.map(otbObject => parsedInsertString(otbObject, table2, keySpace))
+      let startSeconds = new Date();
+      let seconds;
+      let secondsElapsed
+     for (let i = 0; i < productResults.length; i++) {
+        try {
       
-    //   let otbResults = otb.map(otbObject => parsedInsertString(otbObject, table, keySpace))
-    //   let startSeconds = new Date();
-    //   let seconds;
-    //   for (const element of otbResults) {
-    //     try {
-      
-    //         await client.execute(element);
-    //         await timeout(10)
+            await client.execute(productResults[i]);
+            await timeout(10)
+            // console.log(productResults[i])
+            secondsElapsed = parseFloat((new Date() - startSeconds) / 1000)
+            console.log(`record ${i + 1} of ${productResults.length} in ${secondsElapsed} seconds`)
        
-    //     } catch(err) {
-    //       console.log(err)
-    //     }
-    // }
-    // seconds = parseFloat((new Date() - startSeconds) / 1000)
-    // console.log(`Query returned in ${seconds}`)
+        } catch(err) {
+          console.log(err)
+        }
+    }
+    seconds = parseFloat((new Date() - startSeconds) / 1000)
+    console.log(`Query returned in ${seconds}`)
     
     // console.log("created table");
-    // const otb = await prisma.oTBSampleHistory.findMany()
+ 
 
-    // res.json(otbResults[0]);
+    res.json(products);
 
 
   } else if (_req.method === "GET"){
