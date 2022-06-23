@@ -1,7 +1,7 @@
 //@ts-check
 const CosmosClient = require('@azure/cosmos').CosmosClient
 
-import config from './config'
+import appConfig from './appConfig'
 const url = require('url')
 
 
@@ -9,17 +9,17 @@ const url = require('url')
 
 export const initCosmos = () => {
 
-  const endpoint = config.endpoint
-  const key = config.key
+  const endpoint = appConfig.endpoint
+  const key = appConfig.key
   const options = {
     endpoint: endpoint,
     key: key,
     userAgentSuffix: 'CosmosDBJavascriptQuickstart'
   };
   
-  console.log(config)
-  const databaseId = config.database.id
-  const containerId = config.container.id
+  console.log(appConfig)
+  const databaseId = appConfig.database.id
+  const containerId = appConfig.container.id
   const partitionKey = { kind: 'Hash', paths: ['/partitionKey'] }
   const client = new CosmosClient(options)
 /**
@@ -51,7 +51,7 @@ async function createContainer() {
     .containers.createIfNotExists(
       { id: containerId, partitionKey }
     )
-  console.log(`Created container:\n${config.container.id}\n`)
+  console.log(`Created container:\n${appConfig.container.id}\n`)
 }
 
 /**
@@ -121,7 +121,7 @@ async function createFamilyItem(itemBody) {
  * Query the container using SQL
  */
 async function queryContainer() {
-  console.log(`Querying container:\n${config.container.id}`)
+  console.log(`Querying container:\n${appConfig.container.id}`)
 
   // query to return all children in a family
   // Including the partition key value of country in the WHERE filter results in a more efficient query
@@ -196,12 +196,12 @@ createDatabase()
   .then(() => createContainer())
   .then(() => readContainer())
   .then(() => scaleContainer())
-  .then(() => createFamilyItem(config.items.Andersen))
-  .then(() => createFamilyItem(config.items.Wakefield))
+  .then(() => createFamilyItem(appConfig.items.Andersen))
+  .then(() => createFamilyItem(appConfig.items.Wakefield))
   .then(() => queryContainer())
-  .then(() => replaceFamilyItem(config.items.Andersen))
+  .then(() => replaceFamilyItem(appConfig.items.Andersen))
   .then(() => queryContainer())
-  // .then(() => deleteFamilyItem(config.items.Andersen))
+  // .then(() => deleteFamilyItem(appConfig.items.Andersen))
   .then(() => {
     exit(`Completed successfully`)
   })

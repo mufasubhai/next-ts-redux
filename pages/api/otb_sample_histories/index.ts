@@ -2,10 +2,15 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { sampleUserData } from '../../../utils/sample-data'
 import { PrismaClient } from '@prisma/client'
 
+import appConfig from "../../../app/appConfig";
 
   const prisma = new PrismaClient()
 
-
+  export const config = {
+    api: {
+      responseLimit: false,
+    },
+  }
 
 export default async function handle(_req: NextApiRequest, res: NextApiResponse) {
   console.log("HERE")

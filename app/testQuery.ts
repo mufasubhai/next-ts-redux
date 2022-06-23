@@ -1,7 +1,7 @@
 //@ts-check
 const CosmosClient = require('@azure/cosmos').CosmosClient
 
-import config from './config'
+import config from './appConfig'
 const url = require('url')
 
 

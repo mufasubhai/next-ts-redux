@@ -5,25 +5,28 @@ import { PrismaClient } from '@prisma/client'
 
 
 import * as cosmos from '@azure/cosmos'
+const prisma = new PrismaClient();
 
-
-import config from '../../../app/config'
+import appConfig from "../../../app/appConfig";
 // 
 
-const endpoint = config.endpoint
-const key = config.key
+const endpoint = appConfig.endpoint
+const key = appConfig.key
 const options = {
   endpoint: endpoint,
   key: key,
   userAgentSuffix: 'CosmosDBJavascriptQuickstart'
 };
 
-const databaseId = config.database.id
-const containerId = config.container.id
+const databaseId = appConfig.database.id
+const containerId = appConfig.container.id
 const partitionKey = { kind: 'Hash', paths: ['/partitionKey'] }
 const client = new cosmos.CosmosClient(options)
-
-
+export const config = {
+  api: {
+    responseLimit: false,
+  },
+}
 
 export default async function handle(req, res) {
 

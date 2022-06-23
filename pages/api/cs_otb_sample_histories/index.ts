@@ -3,13 +3,15 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 import cassandra from "cassandra-driver";
 import { PrismaClient } from "@prisma/client";
-import config from "../../../app/config";
+import appConfig from "../../../app/appConfig";
 import { objectExpression } from "@babel/types";
 import { TIMEOUT } from "dns";
 
 const prisma = new PrismaClient();
 
 const escapeVals = (el) => {
+
+if (el instanceof Date) return "'" +  el.toISOString().split('T').join(' ').split('Z').join("") + "'"
 
  if (typeof el != "string") return el
   return "'" +  el.split("'").join("''") + "'"
@@ -45,16 +47,16 @@ const parsedInsertString = (otbObject, table, keySpace) => {
   return `INSERT INTO ${keySpace}.${table} ` + insertStringColumns + " VALUES " + insertStringValues
 }
 let authProvider = new cassandra.auth.PlainTextAuthProvider(
-  config.cassandraUN,
-  config.cassandraPW
+  appConfig.cassandraUN,
+  appConfig.cassandraPW
 );
 
-console.log(config.cassandraLocalDataCenter);
+console.log(appConfig.cassandraLocalDataCenter);
 
 let client = new cassandra.Client({
-  contactPoints: [`${config.cassandraContactPoint}:10350`],
+  contactPoints: [`${appConfig.cassandraContactPoint}:10350`],
   authProvider: authProvider,
-  localDataCenter: config.cassandraLocalDataCenter,
+  localDataCenter: appConfig.cassandraLocalDataCenter,
   sslOptions: {
     secureProtocol: "TLSv1_2_method",
   },
@@ -67,6 +69,12 @@ let table = "otbSampleHistories";
 let table2 = "product"
 let table3 = "dates"
 let table4 = "hierarchies"
+
+export const config = {
+  api: {
+    responseLimit: false,
+  },
+}
 export default async function handle(
   _req: NextApiRequest, res: NextApiResponse
 ) {
@@ -82,36 +90,37 @@ export default async function handle(
     console.log("created keyspace");
   
 
-    query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table4} (
-     hrchy_id int PRIMARY KEY,
-       subclass varchar,
-      class varchar,
-      dept varchar
-      );`;
-    // query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table3} (
-    //   date_val timestamp PRIMARY KEY,
-    //   day_eng varchar,
-    //   fscl_week int,
-    //   fscl_mnth varchar,
-    //   FSCL_QTR varchar,
-    //   FSCL_YEAR int,
+    // query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table4} (
+    //  hrchy_id int PRIMARY KEY,
+    //    subclass varchar,
+    //   class varchar,
+    //   dept varchar
     //   );`;
+    query = `CREATE TABLE IF NOT EXISTS ${keySpace}.${table3} (
+      date_val timestamp PRIMARY KEY,
+      day_eng varchar,
+      fscl_week varchar,
+      fscl_mnth varchar,
+      FSCL_QTR varchar,
+      FSCL_YEAR int,
+      );`;
       // PRIMARY KEY (fiscalYear, fiscalQuarter, fiscalMonth, fiscalWeek, deptName, className, priceStatus)
       await client.execute(query);
-      const hierarchies = await prisma.hierarchy.findMany();
+      const dates = await prisma.date.findMany();
+      console.log(dates)
 
-      let hierarchyResults = hierarchies.map(otbObject => parsedInsertString(otbObject, table4, keySpace))
+      let dateResults = dates.map(otbObject => parsedInsertString(otbObject, table3, keySpace))
       let startSeconds = new Date();
       let seconds;
       let secondsElapsed
-     for (let i = 0; i < hierarchyResults.length; i++) {
+     for (let i = 0; i < dateResults.length; i++) {
         try {
       
-            await client.execute(hierarchyResults[i]);
+            await client.execute(dateResults[i]);
             await timeout(10)
-            // console.log(hierarchyResults[i])
+            // console.log(dateResults[i])
             secondsElapsed = parseFloat((new Date() - startSeconds) / 1000)
-            console.log(`record ${i + 1} of ${hierarchyResults.length} in ${secondsElapsed} seconds`)
+            console.log(`record ${i + 1} of ${dateResults.length} in ${secondsElapsed} seconds`)
        
         } catch(err) {
           console.log(err)
@@ -120,10 +129,10 @@ export default async function handle(
     seconds = parseFloat((new Date() - startSeconds) / 1000)
     console.log(`Query returned in ${seconds}`)
     
-    // console.log("created table");
+    // // console.log("created table");
  
 
-    res.json(hierarchies);
+    res.json(dates);
 
 
   } else if (_req.method === "GET"){
