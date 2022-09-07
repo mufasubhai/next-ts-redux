@@ -28,7 +28,7 @@ export const counterSlice = createSlice({
     decrement: state => {
       state.value--;
     },
-// 'The increment by amount' action here, has one job and that is to take whatever value is passed to it and add that to state.value. 
+// 'The increment by amount' action here, has one job and that is to take whatever value is passed to it and add that to stytate.value. 
 // The PayloadAction type here is used to declare the contents of `action.payload`
     incrementByAmount: (state, action: PayloadAction<number>) => {
       state.value += action.payload;
